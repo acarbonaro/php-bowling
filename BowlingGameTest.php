@@ -18,19 +18,30 @@ class BowlingGameTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function testGutterGame()
+    protected function rollSpare()
+    {
+        $this->game->roll(5);
+        $this->game->roll(5);
+    }
+
+    protected function rollStrike()
+    {
+        $this->game->roll(10);
+    }
+
+    public function testScoreForGutterGameIs0()
     {
         $this->rollMany(20, 0);
         $this->assertEquals(0, $this->game->score());
     }
 
-    public function testAllOnes()
+    public function testScoreForAllOnesIs20()
     {
         $this->rollMany(20, 1);
         $this->assertEquals(20, $this->game->score());
     }
 
-    public function testOneSpare()
+    public function testScoreForOneSpareFollowedBy3Is16()
     {
         $this->rollSpare();
         $this->game->roll(3);
@@ -38,9 +49,18 @@ class BowlingGameTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(16, $this->game->score());
     }
 
-    public function rollSpare()
+    public function testScoreForOneStrikeFollowedBy3And4Is24()
     {
-        $this->game->roll(5);
-        $this->game->roll(5);
+        $this->rollStrike();
+        $this->game->roll(3);
+        $this->game->roll(4);
+        $this->rollMany(17, 0);
+        $this->assertEquals(24, $this->game->score());
+    }
+
+    public function testScoreForPerfectGameIs300()
+    {
+        $this->rollMany(12, 10);
+        $this->assertEquals(300, $this->game->score());
     }
 }
